@@ -2,6 +2,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import {getBooks} from './components/booksFetcher.js';
+
 import {BooksHeader} from './components/header/header.jsx';
 import {BooksList} from './components/booksList/booksList.jsx'
 
@@ -17,13 +19,10 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
 
-        fetch('/mock.json')
-            .then(function(response) {
-                return response.json()
-            })
-            .then((json) => {
+        getBooks()
+            .then((books) => {
                 this.setState({
-                    books: this._extractBooksFromJSON(json),
+                    books: books,
                     error:''
                 })
             })
@@ -43,16 +42,6 @@ class Main extends React.Component {
                     <BooksHeader />
                     {contentBloc}
                 </section>;
-    }
-
-    _extractBooksFromJSON(json) {
-        let books = [];
-        for(let module of json.modules) {
-            if(module[0] === "list") {
-                books.push(...module[1].books);
-            }
-        }
-        return books;
     }
 }
 
