@@ -45,7 +45,11 @@
     box-shadow: 0 0 10px black;
     width: 186px;
     height: 279px;
+}
 
+.book-cover:hover {
+    transform: scale(0.9);
+    filter: grayscale(100%);
 }
 
 .book-title {
