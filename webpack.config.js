@@ -2,14 +2,12 @@ var webpack = require('webpack');
 
 // PostCSS Plugins
 var autoprefixer = require('autoprefixer');
-var customProperties = require("postcss-custom-properties")
+var customProperties = require("postcss-custom-properties");
 
-
-var plugin = customProperties();
-plugin.setVariables({
-    "--btn-primary-color":"blue"
+var webpackCustomColor = customProperties();
+webpackCustomColor.setVariables({
+    "--button-primary-color":"blue"
 });
-
 
 module.exports = {
     entry: "./main.jsx",
@@ -21,24 +19,24 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.jsx$$/,
-                loader: "babel-loader",
+                test: /\.js|\.jsx/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
                 query: {
-                    presets: [ "es2015"],
-                    plugins: ["transform-react-jsx","transform-class-properties"],
-                    cacheDirectory:true
+                    presets:['es2015'],
+                    plugins: ["transform-react-jsx", "transform-class-properties"],
+                    cacheDirectory: true
                 }
             },
-            { test: /\.css$/, loader: "style-loader!css-loader!postcss-loader" },
+            { test: /\.css$/, loader: "style-loader!css-loader!postcss" },
             { test: /\.gif$|\.png$|\.jpg$/, loader: "file-loader?name=[path][name].[ext]" }
         ]
     },
     plugins: [
-        new webpack.ProvidePlugin({
-            'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
-        })
+        new webpack.optimize.UglifyJsPlugin({minimize: true})
     ],
     postcss: function () {
-        return [autoprefixer,plugin];
+        return [autoprefixer, webpackCustomColor];
     }
+
 };

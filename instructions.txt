@@ -1,0 +1,183 @@
+Steps : 
+
+1. edit index.html to add fetch (explication sur XMLHttpRequest)
+
+fetch('./mock.json').then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        console.log(data);
+    });
+	
+2. Switch to es2015 !
+
+fetch('./mock.json')
+	.then((response) => response.json())
+	.then((data) => {
+		console.log(data);
+	}).catch((error) => {
+		console.log(error);
+	});
+
+3. add extractbook function
+
+function _extractBooksFromJSON(json) {
+	let books = [];
+	for(let module of json.modules) {
+		if(module[0] === "list") {
+			books.push(...module[1].books);
+		}
+	}
+	return books;
+}	
+	
+4. use extractbook function to add the book as divs
+	
+fetch('./mock.json').then(response => response.json())
+    .then(data => {
+        let books = _extractBooksFromJSON(data);
+        let booksTags = '';
+
+        for(let book of books) {
+            booksTags += `<div>${book.title}</div>`;
+        }
+
+        document.getElementById('main').innerHTML = booksTags;
+    });
+
+5. Create methode getBooks that return the books as a promise in a separate script block
+	
+6. extract the js into a module :
+	- select js
+	- >refactor > extract > include file
+	- bookFetcher in /components
+	
+7. export getBooks 
+
+8. export the  other<script> into main.js
+
+9. import the bookFetcher module and delete the <script> tag about it in the index.html  : Damn it doesn't work anymore !!!
+
+10. We need a module manager...
+
+11. introduce webpack
+
+12. Show the webpack.config.js file
+
+13. Delete the import of main.js and replace it with bundle.js
+
+14. launch webpack : it doesn't compile because we miss babel !
+
+15. add babel loader to webpack :
+
+	{
+		test: /\.js/,
+		exclude: /node_modules/,
+		loader: 'babel-loader',
+		query: {
+			presets:['es2015'],
+		}
+	}
+	
+16. relaunch webpack and restart the server : it's slow...
+
+17. add cacheDirectory to webpack babel :
+	cacheDirectory: true
+	
+18. relaunch webpack and restart the server : it's fast !
+
+19. stop server and start webpack-dev-server
+
+20. Show live reload by passing titles in bold and errors by breaking the import
+
+20b. Show in IE : doesn't work !!
+
+20c. add babel-polyfill in index.html : it works !
+
+ !!!!! switch to jsx !!!!!
+
+21. change extension of main.js to main.jsx
+
+22. change loader extension to jsx
+
+23. add plugins for jsx to babel : 
+
+plugins: ["transform-react-jsx"],
+
+24. show main.jsx and BooksList.jsx
+
+25. add class attributes plugin to babel  : "transform-class-properties"	
+
+26. add class and images loaders : webpack-css
+
+27. Restart webpack-dev-server
+
+28. Show the site
+
+!!!!!!!!!!!!!!! CSS !!!!!!!!!!!!!!!!!!!!!!
+
+29. Show booksList.css : there is no prefix
+
+30. Show filter property : it doesn't work in chrome without prefixes
+
+31. Present PostCSS
+
+32. Add PostCSS to webpack css loader
+
+33. Add autoprefixer plugin to webpack
+
+var autoprefixer = require('autoprefixer');
+
+postcss: function () {
+	return [autoprefixer];
+} 
+
+34. Restart webpack-dev-server : the grayscale is there in chrome !
+
+35. Add CSS variables to booksList.css for the button colors
+
+:root {
+    --button-primary-color: #d25d3a;
+    --button-secondary-color: white;
+}
+
+var(--button-primary-color)
+
+36. The buttons are broken !
+
+37. Add the custom properties plugin to webpack
+
+var customProperties = require("postcss-custom-properties");
+
+38. Restart webpack-dev-server
+
+39. Change the color
+
+
+!!!!!!! END !!!!!!!!!!!!!
+
+
+!!!!!!!!! BONUS 1 : webpack postcss override !!!!!!!!!!!!!!!!!
+
+1. Change the color of css variables in webpack
+
+var webpackCustomColor = customProperties();
+webpackCustomColor.setVariables({
+    "--button-primary-color":"blue"
+});
+
+2. Restart webpack-dev-server
+
+!!!!!!!!! BONUS 2 : weight !!!!!!!!!!!!!!!!!
+
+1. Show the JS weight in the console
+
+2. add minification
+
+plugins: [
+	new webpack.optimize.UglifyJsPlugin({minimize: true})
+]
+
+3. Show the js weight
+
+4. react alone takes 134ko minified
+
