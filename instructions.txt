@@ -152,6 +152,16 @@ var customProperties = require("postcss-custom-properties");
 
 39. Change the color
 
+40. Use @supports for the grayscale
+
+@supports (filter: grayscale(100%))
+{
+    .book-cover:hover {
+        transform: none;
+        filter: grayscale(100%);
+    }
+}
+
 
 !!!!!!! END !!!!!!!!!!!!!
 
